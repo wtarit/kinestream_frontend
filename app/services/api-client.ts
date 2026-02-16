@@ -1,4 +1,12 @@
-const BASE_URL = "http://localhost:8080/api/v1";
+function getApiBaseUrl(): string {
+  try {
+    return import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+  } catch {
+    return "http://localhost:8080";
+  }
+}
+
+const BASE_URL = `${getApiBaseUrl()}/api/v1`;
 
 export class ApiError extends Error {
   constructor(
