@@ -1,17 +1,19 @@
 @import "tailwindcss";
-@plugin "daisyui";
-
-@theme {
-  --font-sans:
-    "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+@plugin "daisyui" {
+  themes: night --default;
 }
 
-html,
-body {
-  @apply bg-white dark:bg-gray-950;
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  }
+/* Override night theme with purple accent */
+[data-theme="night"] {
+  --color-primary: oklch(55.8% 0.26 293);
+  --color-primary-content: oklch(100% 0 0);
+  --color-secondary: oklch(65% 0.19 293);
+  --color-secondary-content: oklch(100% 0 0);
+  --color-accent: oklch(72% 0.17 310);
+  --color-accent-content: oklch(20% 0.02 293);
 }
