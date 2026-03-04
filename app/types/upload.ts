@@ -9,12 +9,6 @@ export interface InitUploadResponse {
   videoId: number;
   uploadUrl: string;
   uploadExpiresAt: string;
-  callbackUrl: string;
-}
-
-export interface UploadCallbackRequest {
-  uploadStatus: string;
-  fileSize: number;
 }
 
 export interface UploadStatusResponse {
