@@ -5,17 +5,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm run dev          # Start dev server (port 5173)
-npm run build        # Production build
-npm run start        # Serve production build (port 3000)
-npm run typecheck    # TypeScript type checking + React Router typegen
-npm run test         # Run Jest tests
-npm run test:watch   # Run tests in watch mode
+pnpm dev          # Start dev server (port 5173)
+pnpm build        # Production build
+pnpm start        # Serve production build (port 3000)
+pnpm typecheck    # TypeScript type checking + React Router typegen
+pnpm test            # Run Jest tests
+pnpm test:watch      # Run tests in watch mode
 ```
 
 To run a single test file:
 ```bash
-npx jest path/to/file.test.ts
+pnpm exec jest path/to/file.test.ts
 ```
 
 ## Architecture
