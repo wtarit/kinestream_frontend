@@ -24,7 +24,6 @@ describe("initUpload", () => {
       videoId: 1,
       uploadUrl: "https://s3.example.com/upload",
       uploadExpiresAt: "2024-01-01T00:00:00Z",
-      callbackUrl: "/callback",
     };
     (globalThis.fetch as jest.Mock<typeof fetch>).mockResolvedValue(
       (await mockResponse(mockData)) as Response,
@@ -45,7 +44,7 @@ describe("initUpload", () => {
 });
 
 describe("uploadCallback", () => {
-  it("sends POST with upload status and file size", async () => {
+  it("sends POST with no body", async () => {
     (globalThis.fetch as jest.Mock<typeof fetch>).mockResolvedValue({
       ok: true,
       status: 200,
@@ -54,13 +53,12 @@ describe("uploadCallback", () => {
       text: () => Promise.resolve(""),
     } as Response);
 
-    await uploadCallback(1, { uploadStatus: "COMPLETED", fileSize: 1024 });
+    await uploadCallback(1);
 
     expect(globalThis.fetch).toHaveBeenCalledWith(
       "http://localhost:8080/api/v1/videos/1/upload-callback",
       expect.objectContaining({
         method: "POST",
-        body: JSON.stringify({ uploadStatus: "COMPLETED", fileSize: 1024 }),
       }),
     );
   });

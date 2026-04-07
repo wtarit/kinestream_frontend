@@ -60,10 +60,7 @@ export function useUpload() {
         await uploadToS3(initRes.uploadUrl, file, setUploadProgress);
 
         setPhase("calling-back");
-        await uploadCallback(initRes.videoId, {
-          uploadStatus: "COMPLETED",
-          fileSize: file.size,
-        });
+        await uploadCallback(initRes.videoId);
 
         setPhase("polling");
       } catch (err) {

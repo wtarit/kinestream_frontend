@@ -1,7 +1,6 @@
 import type {
   InitUploadRequest,
   InitUploadResponse,
-  UploadCallbackRequest,
   UploadStatusResponse,
 } from "~/types/upload";
 import { api } from "./api-client";
@@ -10,11 +9,8 @@ export function initUpload(req: InitUploadRequest): Promise<InitUploadResponse> 
   return api.post<InitUploadResponse>("/videos/init-upload", req);
 }
 
-export function uploadCallback(
-  videoId: number,
-  req: UploadCallbackRequest,
-): Promise<void> {
-  return api.post<void>(`/videos/${videoId}/upload-callback`, req);
+export function uploadCallback(videoId: number): Promise<void> {
+  return api.post<void>(`/videos/${videoId}/upload-callback`);
 }
 
 export function getUploadStatus(videoId: number): Promise<UploadStatusResponse> {
