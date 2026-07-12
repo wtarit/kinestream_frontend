@@ -1,5 +1,4 @@
 export type JobType =
-  | "EXTRACT_METADATA"
   | "GENERATE_THUMBNAIL"
   | "TRANSCODE"
   | "GENERATE_HLS";

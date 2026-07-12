@@ -1,32 +1,16 @@
-import { useEffect, useState } from "react";
-import { FiLoader } from "react-icons/fi";
+import { useState } from "react";
 import type { ResolutionPresetDTO } from "~/types/resolution";
-import { getSuggestedResolutions } from "~/services/transcode-service";
 
 export function ResolutionPicker({
-  videoId,
+  presets,
   onSubmit,
   isSubmitting,
 }: {
-  videoId: number;
+  presets: ResolutionPresetDTO[];
   onSubmit: (resolutions: ResolutionPresetDTO[]) => void;
   isSubmitting: boolean;
 }) {
-  const [presets, setPresets] = useState<ResolutionPresetDTO[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setIsLoading(true);
-    getSuggestedResolutions(videoId)
-      .then((data) => {
-        setPresets(data);
-        setError(null);
-      })
-      .catch((err) => setError(err instanceof Error ? err.message : "Failed to load resolutions"))
-      .finally(() => setIsLoading(false));
-  }, [videoId]);
 
   const toggleResolution = (label: string) => {
     setSelected((prev) => {
@@ -41,18 +25,6 @@ export function ResolutionPicker({
     const chosen = presets.filter((p) => selected.has(p.label));
     onSubmit(chosen);
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center gap-2 text-sm text-base-content/60">
-        <FiLoader className="animate-spin" /> Loading resolutions...
-      </div>
-    );
-  }
-
-  if (error) {
-    return <p className="text-sm text-error">{error}</p>;
-  }
 
   if (presets.length === 0) {
     return <p className="text-sm text-base-content/60">No resolutions available for transcoding.</p>;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { FiArrowLeft, FiTrash2 } from "react-icons/fi";
 import { useVideo } from "~/hooks/use-video";
@@ -12,6 +12,7 @@ import { ResolutionPicker } from "~/components/transcode/resolution-picker";
 import { TranscodeJobsList } from "~/components/transcode/transcode-jobs-list";
 import { getThumbnailUrl } from "~/services/stream-service";
 import { requestTranscode } from "~/services/transcode-service";
+import { uploadCallback } from "~/services/upload-service";
 import { deleteVideo } from "~/services/video-service";
 import type { ResolutionPresetDTO } from "~/types/resolution";
 
@@ -30,6 +31,14 @@ export default function VideoDetail() {
   const [isTranscoding, setIsTranscoding] = useState(false);
   const [transcodeError, setTranscodeError] = useState<string | null>(null);
   const [pollJobs, setPollJobs] = useState(false);
+  const [resolutionPresets, setResolutionPresets] = useState<ResolutionPresetDTO[]>([]);
+
+  useEffect(() => {
+    if (!video || (video.status !== "UPLOADED" && video.status !== "READY")) return;
+    uploadCallback(videoId)
+      .then(setResolutionPresets)
+      .catch(() => setResolutionPresets([]));
+  }, [videoId, video?.status]);
 
   const { jobs, isPolling, hasActiveJobs } = usePollTranscodeJobs(
     videoId,
@@ -128,7 +137,7 @@ export default function VideoDetail() {
                 <h3 className="text-sm font-semibold mb-2">Transcode</h3>
                 {transcodeError && <ErrorAlert message={transcodeError} />}
                 <ResolutionPicker
-                  videoId={videoId}
+                  presets={resolutionPresets}
                   onSubmit={handleTranscode}
                   isSubmitting={isTranscoding}
                 />

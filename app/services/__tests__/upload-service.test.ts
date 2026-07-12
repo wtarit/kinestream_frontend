@@ -44,16 +44,16 @@ describe("initUpload", () => {
 });
 
 describe("uploadCallback", () => {
-  it("sends POST with no body", async () => {
-    (globalThis.fetch as jest.Mock<typeof fetch>).mockResolvedValue({
-      ok: true,
-      status: 200,
-      headers: new Headers({ "content-length": "0" }),
-      json: () => Promise.resolve(undefined),
-      text: () => Promise.resolve(""),
-    } as Response);
+  it("sends POST and returns resolution presets", async () => {
+    const mockPresets = [
+      { label: "720p", width: 1280, height: 720, targetBitrateKbps: 2500, description: "HD" },
+      { label: "480p", width: 854, height: 480, targetBitrateKbps: 1000, description: "SD" },
+    ];
+    (globalThis.fetch as jest.Mock<typeof fetch>).mockResolvedValue(
+      (await mockResponse(mockPresets)) as Response,
+    );
 
-    await uploadCallback(1);
+    const result = await uploadCallback(1);
 
     expect(globalThis.fetch).toHaveBeenCalledWith(
       "http://localhost:8080/api/v1/videos/1/upload-callback",
@@ -61,6 +61,8 @@ describe("uploadCallback", () => {
         method: "POST",
       }),
     );
+    expect(result).toHaveLength(2);
+    expect(result[0].label).toBe("720p");
   });
 });
 

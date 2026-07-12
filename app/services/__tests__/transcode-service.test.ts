@@ -1,6 +1,5 @@
 import { jest, describe, it, expect, beforeEach, afterEach } from "@jest/globals";
 import {
-  getSuggestedResolutions,
   requestTranscode,
   getTranscodeJobs,
 } from "~/services/transcode-service";
@@ -20,26 +19,6 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.restoreAllMocks();
-});
-
-describe("getSuggestedResolutions", () => {
-  it("fetches suggested resolutions for a video", async () => {
-    const mockData = [
-      { label: "720p", width: 1280, height: 720, targetBitrateKbps: 2500, description: "HD" },
-    ];
-    (globalThis.fetch as jest.Mock<typeof fetch>).mockResolvedValue(
-      (await mockResponse(mockData)) as Response,
-    );
-
-    const result = await getSuggestedResolutions(1);
-
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "http://localhost:8080/api/v1/videos/1/suggested-resolutions",
-      expect.any(Object),
-    );
-    expect(result).toHaveLength(1);
-    expect(result[0].label).toBe("720p");
-  });
 });
 
 describe("requestTranscode", () => {

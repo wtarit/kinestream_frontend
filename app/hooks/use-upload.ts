@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import type { UploadStatusResponse } from "~/types/upload";
+import type { ResolutionPresetDTO } from "~/types/resolution";
 import {
   initUpload,
   uploadToS3,
@@ -21,6 +22,7 @@ export function useUpload() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [videoId, setVideoId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [resolutionPresets, setResolutionPresets] = useState<ResolutionPresetDTO[]>([]);
 
   const { data: serverStatus } = usePollUploadStatus(
     videoId,
@@ -48,6 +50,7 @@ export function useUpload() {
       setPhase("initializing");
       setUploadProgress(0);
       setError(null);
+      setResolutionPresets([]);
 
       try {
         const initRes = await initUpload({
@@ -60,7 +63,8 @@ export function useUpload() {
         await uploadToS3(initRes.uploadUrl, file, setUploadProgress);
 
         setPhase("calling-back");
-        await uploadCallback(initRes.videoId);
+        const presets = await uploadCallback(initRes.videoId);
+        setResolutionPresets(presets);
 
         setPhase("polling");
       } catch (err) {
@@ -76,6 +80,7 @@ export function useUpload() {
     setUploadProgress(0);
     setVideoId(null);
     setError(null);
+    setResolutionPresets([]);
   }, []);
 
   return {
@@ -84,6 +89,7 @@ export function useUpload() {
     serverStatus,
     videoId,
     error,
+    resolutionPresets,
     startUpload,
     reset,
   };
